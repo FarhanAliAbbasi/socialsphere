@@ -42,9 +42,9 @@ This project is contained within a single, portable HTML file for easy deploymen
 
 social-sphere/
 │
-├── social_sphere_dashboard.html  # Main application file
-├── logo.png                      # Agency logo (optional, auto-fallback provided)
-└── README.md                     # Project documentation
+├── social_sphere_dashboard.html  # Main application file.
+├── logo.png                      # Agency logo (optional, auto-fallback provided).
+└── README.md                     # Project documentation.
 
 
 ⚙️ Configuration & Customization
