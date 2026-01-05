@@ -66,7 +66,7 @@ Since this project uses CDN links, there are no dependencies to install.
 
 Clone the Repository:
 
-git clone [https://github.com/farhanaliabbasi/social-sphere.git](https://github.com/farhanaliabbasi/social-sphere.git)
+git clone (https://github.com/FarhanAliAbbasi/socialsphere.git)
 cd social-sphere
 
 
