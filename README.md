@@ -1,102 +1,152 @@
-Social Sphere - Interactive Digital Agency Dashboard
+Social Sphere - Digital Agency Interactive Dashboard
 
-Social Sphere is a high-performance, single-page interactive website designed for a modern digital marketing agency. Built with a focus on immersive user experience, it features advanced animations, interactive data visualization, and a premium dark-themed aesthetic.
+Social Sphere is a premium, single-page interactive website template designed for digital marketing agencies. It combines high-end aesthetics (Dark Mode, Glassmorphism) with functional tools like a live cost calculator and data visualizations to engage potential clients.
 
-🚀 Live Demo Features
+Built with vanilla HTML, CSS (Tailwind), and JavaScript, it requires no build steps or complex backend, making it incredibly easy to deploy and customize.
 
-Immersive Hero Section: Features a dynamic, interactive HTML5 Canvas background representing a social network graph that reacts to mouse movement in real-time.
+📑 Table of Contents
 
-Smart "Growth Estimator": A fully functional JavaScript calculator that allows potential clients to estimate costs for social media growth across different platforms (Facebook, Instagram, TikTok, YouTube).
+Features
 
-Data Visualization: Integrated Chart.js polar area and bar charts to visualize platform connectivity and pricing structures dynamically with custom animations.
+Technology Stack
 
-Interactive Services Carousel: A responsive, auto-scrolling slider showcasing services (Web Dev, SEO, App Dev) with 3D tilt effects, cinematic hover animations, and sequential scroll reveal.
+Installation & Setup
 
-Scroll Reveal Animations: Custom intersection observer logic that triggers smooth entry animations (fade-in, slide-in, zoom) as the user scrolls down the page.
+Project Structure
 
-Premium UI/UX:
+Configuration Guide
 
-Glassmorphism: Frosted glass effects on cards and navigation.
+Deployment
 
-Custom Cursor: A magnetic cursor with physics-based trailing effects (Desktop only).
+License
 
-Dark Mode: A sophisticated slate & amber color palette designed for high contrast and readability.
+🚀 Features
 
-Responsive Design: Fully adaptive layout that works seamlessly on mobile, tablet, and desktop devices.
+🎨 Immersive UI/UX
 
-🛠️ Technologies Used
+Dynamic Hero Section: Features an HTML5 Canvas-based "neural network" background that reacts interactively to mouse movements.
 
-HTML5: Semantic structure.
+Premium Dark Theme: A sophisticated Slate & Amber color palette designed for high contrast and luxury appeal.
 
-Tailwind CSS (via CDN): Utility-first styling for rapid, responsive design and animations.
+Glassmorphism: Modern frosted glass effects on cards, navigation, and overlays.
 
-Vanilla JavaScript: Core logic for animations, state management, calculator functions, and DOM manipulation (No framework required).
+Custom Cursor: A magnetic cursor with physics-based trailing effects (Desktop only) for a native-app feel.
 
-Chart.js: For rendering interactive data charts.
+Scroll Reveal Animations: Elements slide in, zoom, and fade gracefully as the user scrolls.
 
-Google Fonts: Utilizing 'Plus Jakarta Sans' for modern typography.
+🛠️ Interactive Tools
+
+Growth Estimator: A real-time JavaScript calculator allowing clients to estimate costs for followers/subscribers across Facebook, Instagram, TikTok, and YouTube.
+
+Services Carousel: An auto-scrolling, touch-friendly slider showcasing expertise (Web Dev, SEO, etc.) with 3D tilt hover effects.
+
+Data Visualization: Integrated Chart.js polar area and bar charts to visualize platform connectivity and pricing tiers.
+
+📱 Fully Responsive
+
+Adapts seamlessly to Mobile, Tablet, and Desktop screens.
+
+Includes a custom mobile navigation menu and optimized touch targets.
+
+🛠 Technology Stack
+
+Core: HTML5, CSS3, Vanilla JavaScript (ES6+)
+
+Styling: Tailwind CSS (loaded via CDN for instant usage)
+
+Charts: Chart.js (v4.4.1)
+
+Fonts: 'Plus Jakarta Sans' via Google Fonts
+
+Icons: Inline SVG icons (Heroicons/Custom)
+
+📦 Installation & Setup
+
+Since this project uses CDN links, there are no dependencies to install.
+
+Clone the Repository:
+
+git clone [https://github.com/farhanaliabbasi/social-sphere.git](https://github.com/farhanaliabbasi/social-sphere.git)
+cd social-sphere
+
+
+Add Your Logo:
+
+Place your logo image in the root folder.
+
+Rename it to logo.png.
+
+Note: The code handles sizing and fallback automatically.
+
+Run Locally:
+
+Simply double-click index.html to open it in your browser.
+
+Optional: Use a Live Server extension in VS Code for hot-reloading during edits.
 
 📂 Project Structure
 
-This project is contained within a single, portable HTML file for easy deployment.
-
 social-sphere/
 │
-├── social_sphere_dashboard.html  # Main application file.
-├── logo.png                      # Agency logo (optional, auto-fallback provided).
-└── README.md                     # Project documentation.
+├── index.html                    # The main application file containing all code
+├── logo.png                      # Your agency logo (required for nav bar)
+└── README.md                     # This documentation file
 
 
-⚙️ Configuration & Customization
+⚙️ Configuration Guide
 
-1. Logo Setup
+You can customize the dashboard by editing the index.html file directly. Look for the <script> section at the bottom.
 
-Place your company logo in the root directory and name it logo.png. The dashboard is configured to automatically load this file. If missing, it falls back to a stylized "S" icon.
+1. Changing Calculator Rates
 
-2. Contact Information
+To adjust the cost per follower/subscriber:
 
-Search for the footer section in social_sphere_dashboard.html to update:
+Open index.html.
 
-Phone numbers
+Search for the selectService function in the script.
 
-WhatsApp links
+Update the currentRate values or change the HTML data-rate attributes in the Growth Estimator section.
 
-Social media profiles (Facebook, Instagram, TikTok)
-
-3. Pricing & Calculator Logic
-
-To modify the rates for the Growth Estimator:
-
-Open social_sphere_dashboard.html.
-
-Locate the selectService function script.
-
-Update the data-rate attributes on the buttons to change the cost per unit (e.g., data-rate="2.0" for 2 PKR/follower).
-
-4. Gemini AI Integration (Optional)
-
-The code contains a placeholder for Google's Gemini API to power the "AI Content Strategist" feature (currently disabled/removed for the static version). To re-enable:
-
-Uncomment the AI section in the HTML.
-
-Add your API key to the const apiKey = "" variable in the script.
-
-📦 How to Run
-
-Clone the repository:
-
-git clone [https://github.com/yourusername/social-sphere.git](https://github.com/yourusername/social-sphere.git)
+<!-- Example: Changing Facebook rate to 3.0 -->
+<button ... data-rate="3.0" ... >Facebook</button>
 
 
-Open the file:
-Simply double-click social_sphere_dashboard.html to open it in Chrome, Firefox, Safari, or Edge.
+2. Updating Contact Info
+
+Scroll to the <footer> section in the HTML to update:
+
+Phone Numbers: currently set to +92-314-950-0110 and +92-316-520-8030.
+
+WhatsApp Link: Update the href in the floating button and footer links.
+
+Social Links: Update href attributes for Facebook, Instagram, and TikTok icons.
+
+3. Modifying Services
+
+Locate the <section id="services">. Each service is a <div> block inside the slider. You can copy/paste these blocks to add more services or edit the text/images of existing ones.
 
 🚀 Deployment
 
-Since this is a static HTML file, it can be deployed instantly to:
+This project is "Static," meaning it can be hosted anywhere for free.
 
-GitHub Pages: Go to Settings > Pages > Source (main branch).
+GitHub Pages (Recommended)
 
-Netlify/Vercel: Drag and drop the folder into the dashboard.
+Push your code to a GitHub repository.
 
-Designed to showcase the intersection of creativity and technology.
+Go to Settings > Pages.
+
+Under Source, select main branch and click Save.
+
+Your site will be live at https://farhanaliabbasi.github.io/social-sphere/index.html.
+
+Netlify / Vercel
+
+Drag and drop the project folder into your Netlify/Vercel dashboard.
+
+It will be live instantly.
+
+📄 License
+
+This project is open-source and available under the MIT License. You are free to use, modify, and distribute it for personal or commercial projects.
+
+Social Sphere — Transforming Brands in the Digital Sphere.
