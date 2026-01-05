@@ -115,8 +115,6 @@ Update the currentRate values or change the HTML data-rate attributes in the Gro
 
 Scroll to the <footer> section in the HTML to update:
 
-Phone Numbers: currently set to +92-314-950-0110 and +92-316-520-8030.
-
 WhatsApp Link: Update the href in the floating button and footer links.
 
 Social Links: Update href attributes for Facebook, Instagram, and TikTok icons.
