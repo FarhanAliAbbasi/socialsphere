@@ -125,25 +125,8 @@ Social Links: Update href attributes for Facebook, Instagram, and TikTok icons.
 
 Locate the <section id="services">. Each service is a <div> block inside the slider. You can copy/paste these blocks to add more services or edit the text/images of existing ones.
 
-🚀 Deployment
+Your site will be live at (https://farhanaliabbasi.github.io/socialsphere/)
 
-This project is "Static," meaning it can be hosted anywhere for free.
-
-GitHub Pages (Recommended)
-
-Push your code to a GitHub repository.
-
-Go to Settings > Pages.
-
-Under Source, select main branch and click Save.
-
-Your site will be live at https://farhanaliabbasi.github.io/social-sphere/index.html.
-
-Netlify / Vercel
-
-Drag and drop the project folder into your Netlify/Vercel dashboard.
-
-It will be live instantly.
 
 📄 License
 
