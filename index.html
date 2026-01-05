@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Sphere | Digital Marketing Agency</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #020617; /* Slate 950 */
+            color: #e2e8f0; /* Slate 200 */
+            cursor: none; /* Hide default cursor */
+            overflow-x: hidden;
+        }
+
+        /* Custom Cursor */
+        .cursor-dot,
+        .cursor-outline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 9999;
+            pointer-events: none;
+        }
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #f59e0b; /* Amber-500 */
+            transition: width 0.5s, height 0.5s, background-color 0.5s;
+        }
+        .cursor-outline {
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(245, 158, 11, 0.5);
+            transition: width 0.5s, height 0.5s, background-color 0.5s;
+        }
+        
+        /* Hover state */
+        body.hovering .cursor-dot {
+            width: 12px;
+            height: 12px;
+            background-color: #f59e0b;
+        }
+        body.hovering .cursor-outline {
+            width: 70px;
+            height: 70px;
+            background-color: rgba(245, 158, 11, 0.05);
+            border-color: #f59e0b;
+        }
+
+        /* Background Images with Overlays */
+        .hero-bg {
+            background-color: #020617;
+            /* Fallback image if canvas fails, but mostly dark for canvas to shine */
+            background-image: radial-gradient(circle at 50% 50%, rgba(15, 23, 42, 0.5) 0%, rgba(2, 6, 23, 1) 100%); 
+        }
+
+        .services-bg {
+            background-image: linear-gradient(to bottom, #020617 0%, rgba(2, 6, 23, 0.95) 50%, #020617 100%), url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        .calc-bg {
+            background-image: linear-gradient(to right, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.98)), url('https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .testimonials-bg {
+            background-image: linear-gradient(to top, #020617 0%, rgba(2, 6, 23, 0.9) 50%, #020617 100%), url('https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=2029&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Chart Container Styling */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+
+        @media (max-width: 640px) {
+            .chart-container {
+                height: 300px;
+            }
+            body {
+                cursor: auto; /* Reset cursor on mobile */
+            }
+            .cursor-dot, .cursor-outline {
+                display: none;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .glass-card {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* 3D Tilt Card Style */
+        .tilt-card {
+            transform-style: preserve-3d;
+            transform: perspective(1000px);
+            will-change: transform; /* Performance optimization */
+        }
+        
+        /* Animations */
+        .animate-fade-in-up {
+            animation: fadeInUp 1.5s ease-out forwards;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .reveal-element {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 2s ease-out, transform 2s cubic-bezier(0.2, 0.8, 0.2, 1);
+            will-change: opacity, transform;
+        }
+
+        .reveal-element.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-left {
+            opacity: 0;
+            transform: translateX(-100px);
+            transition: all 2s cubic-bezier(0.2, 0.8, 0.2, 1);
+            will-change: opacity, transform;
+        }
+        .reveal-right {
+            opacity: 0;
+            transform: translateX(100px);
+            transition: all 2s cubic-bezier(0.2, 0.8, 0.2, 1);
+            will-change: opacity, transform;
+        }
+        .reveal-left.is-visible, .reveal-right.is-visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        /* Center Zoom Reveal */
+        .reveal-zoom {
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 2s cubic-bezier(0.2, 0.8, 0.2, 1);
+            will-change: opacity, transform;
+        }
+        .reveal-zoom.is-visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+    </style>
+</head>
+<body class="antialiased text-slate-300 bg-slate-950 overflow-x-hidden">
+
+    <!-- Custom Cursor -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-slate-950/80 backdrop-blur-lg border-b border-slate-800 transition-all duration-1000">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center gap-3 cursor-pointer group hoverable" onclick="scrollToSection('hero')">
+                    <!-- Placeholder SVG Logo (Replace this div with your <img> tag if needed) -->
+                    <div class="w-10 h-10 bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-amber-500/20 transition-all duration-1000">
+                        <!-- User can replace with img tag -->
+                        <img src="logo.jpeg" alt="S" class="w-full h-full object-cover rounded-xl transition-all duration-1000" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+                        <span class="font-bold text-xl hidden">S</span>
+                    </div>
+                    <span class="font-bold text-2xl tracking-tight text-white group-hover:text-amber-500 transition-colors duration-700">Social Sphere</span>
+                </div>
+                
+                <!-- Desktop Links -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <button onclick="scrollToSection('services')" class="hoverable text-slate-300 hover:text-amber-500 font-medium transition-colors duration-500 text-sm uppercase tracking-wide">Services</button>
+                    <button onclick="scrollToSection('calculator')" class="hoverable text-slate-300 hover:text-amber-500 font-medium transition-colors duration-500 text-sm uppercase tracking-wide">Calculator</button>
+                    <button onclick="scrollToSection('packages')" class="hoverable text-slate-300 hover:text-amber-500 font-medium transition-colors duration-500 text-sm uppercase tracking-wide">Packages</button>
+                    <button onclick="scrollToSection('testimonials')" class="hoverable text-slate-300 hover:text-amber-500 font-medium transition-colors duration-500 text-sm uppercase tracking-wide">Reviews</button>
+                    <button onclick="scrollToSection('contact')" class="hoverable bg-amber-600 hover:bg-amber-500 text-white px-6 py-2.5 rounded-full font-semibold transition-all duration-500 shadow-[0_0_15px_rgba(245,158,11,0.3)] hover:shadow-[0_0_25px_rgba(245,158,11,0.6)] transform hover:-translate-y-0.5">
+                        Get a Quote
+                    </button>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-slate-300 hover:text-white focus:outline-none p-2">
+                        <span class="text-2xl">☰</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-slate-900 border-t border-slate-800 absolute w-full">
+            <div class="px-4 pt-2 pb-6 space-y-2">
+                <button onclick="scrollToSection('services')" class="block w-full text-left px-3 py-3 text-slate-300 font-medium hover:bg-slate-800 rounded-lg">Services</button>
+                <button onclick="scrollToSection('calculator')" class="block w-full text-left px-3 py-3 text-slate-300 font-medium hover:bg-slate-800 rounded-lg">Calculator</button>
+                <button onclick="scrollToSection('packages')" class="block w-full text-left px-3 py-3 text-slate-300 font-medium hover:bg-slate-800 rounded-lg">Packages</button>
+                <button onclick="scrollToSection('contact')" class="block w-full text-left px-3 py-3 text-amber-500 font-bold hover:bg-slate-800 rounded-lg">Contact Us</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 1. Hero Section with Network Canvas -->
+    <section id="hero" class="relative pt-32 pb-20 lg:pt-48 lg:pb-40 overflow-hidden bg-slate-950">
+        <!-- Live Network Background -->
+        <canvas id="networkCanvas" class="absolute inset-0 z-0 w-full h-full opacity-60"></canvas>
+        <div class="absolute inset-0 bg-gradient-to-b from-slate-950/20 via-transparent to-slate-950 z-0 pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center max-w-4xl mx-auto">
+                <div class="reveal-element inline-flex items-center px-4 py-2 rounded-full bg-slate-900/80 backdrop-blur-sm border border-slate-700 shadow-sm mb-8">
+                    <span class="relative flex h-3 w-3 mr-3">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                    </span>
+                    <span class="text-sm font-semibold text-slate-300 tracking-wide uppercase">Your Digital Growth Partner</span>
+                </div>
+                <h1 class="reveal-element text-5xl md:text-7xl font-extrabold text-white tracking-tight mb-8 leading-tight drop-shadow-2xl" style="transition-delay: 100ms;">
+                    Transforming Brands in the <br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-orange-500 to-amber-300 animate-gradient-x bg-[length:200%_auto]">Digital Sphere</span>
+                </h1>
+                <p class="reveal-element text-xl text-slate-300 mb-10 max-w-2xl mx-auto leading-relaxed font-light drop-shadow-lg" style="transition-delay: 200ms;">
+                    We don't just run ads; we build ecosystems. From social growth to full-stack development, we provide the infrastructure for your success.
+                </p>
+                <div class="reveal-element flex flex-col sm:flex-row justify-center gap-6" style="transition-delay: 300ms;">
+                    <button onclick="scrollToSection('packages')" class="hoverable bg-amber-600 text-white px-10 py-4 rounded-full font-bold hover:bg-amber-500 transition-all shadow-[0_0_20px_rgba(245,158,11,0.4)] hover:shadow-[0_0_40px_rgba(245,158,11,0.6)] transform hover:-translate-y-1">
+                        Explore Packages
+                    </button>
+                    <button onclick="scrollToSection('calculator')" class="hoverable group bg-white/5 text-white border border-white/20 px-10 py-4 rounded-full font-bold hover:bg-white/10 transition-all backdrop-blur-sm flex items-center justify-center gap-2">
+                        Growth Calculator
+                        <span class="group-hover:translate-x-1 transition-transform">→</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Organic Divider -->
+        <div class="absolute bottom-0 left-0 w-full overflow-hidden leading-none rotate-180">
+            <svg class="relative block w-[calc(100%+1.3px)] h-[60px]" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="fill-slate-950"></path>
+            </svg>
+        </div>
+    </section>
+
+    <!-- 2. Why Choose Us (Professionalism) -->
+    <section class="py-24 bg-slate-950 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <!-- Text Content: Reveal Left Instantly -->
+                <div class="reveal-left" style="transition-duration: 1.5s;">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500 text-xs font-bold uppercase tracking-wider mb-6">
+                        <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span> Why Choose Us
+                    </div>
+                    <h2 class="text-3xl md:text-5xl font-extrabold text-white mb-6">
+                        More Than Just An <br>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-slate-200 to-slate-500">Agency.</span>
+                    </h2>
+                    <p class="text-slate-400 text-lg leading-relaxed mb-6">
+                        We are professionals dedicated to providing clients with measurable results. We have established extensive cooperation with well-known companies and pioneers to sell their products and services effectively.
+                    </p>
+                    <p class="text-slate-400 text-lg leading-relaxed mb-12">
+                        Although advertising forms differ between companies, we always align our work with what our clients want to achieve, staying true to the company's mission.
+                    </p>
+                    
+                    <!-- Features: Reveal Top (Cascade) -->
+                    <div class="flex flex-col sm:flex-row gap-6">
+                        <div class="flex items-center gap-3 reveal-element" style="transition-delay: 200ms; transform: translateY(-40px);">
+                            <div class="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center text-green-500 border border-green-500/20">✓</div>
+                            <span class="text-white font-medium">Result Oriented</span>
+                        </div>
+                        <div class="flex items-center gap-3 reveal-element" style="transition-delay: 400ms; transform: translateY(-40px);">
+                            <div class="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center text-green-500 border border-green-500/20">✓</div>
+                            <span class="text-white font-medium">Extensive Network</span>
+                        </div>
+                        <div class="flex items-center gap-3 reveal-element" style="transition-delay: 600ms; transform: translateY(-40px);">
+                            <div class="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center text-green-500 border border-green-500/20">✓</div>
+                            <span class="text-white font-medium">Tailored Strategy</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Image Card: Reveal Left (Delayed) -->
+                <div class="reveal-left relative" style="transition-delay: 200ms; transition-duration: 2s;">
+                    <!-- Visual representation of professionalism -->
+                    <div class="relative z-10 bg-gradient-to-br from-slate-800 to-slate-900 p-1 rounded-3xl border border-slate-700 shadow-2xl rotate-2 hover:rotate-0 transition-transform duration-500 hoverable tilt-card">
+                        <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=2070&auto=format&fit=crop" alt="Team Meeting" class="rounded-[1.3rem] opacity-90">
+                        <div class="absolute bottom-6 left-6 right-6 bg-slate-900/90 backdrop-blur-md p-4 rounded-xl border border-slate-700 shadow-lg">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <div class="text-xs text-slate-400 uppercase tracking-wider">Client Satisfaction</div>
+                                    <div class="text-2xl font-bold text-white">100%</div>
+                                </div>
+                                <div class="h-10 w-10 bg-amber-500 rounded-full flex items-center justify-center text-slate-900 font-bold">★</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Decorative back blob -->
+                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-amber-600/20 rounded-full blur-[80px] -z-10"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. Our Expertise (Services) -->
+    <section id="services" class="py-24 bg-slate-900 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+            <div class="reveal-left text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-extrabold text-white mb-6">Our <span class="text-amber-500">Expertise</span></h2>
+                <div class="w-24 h-1.5 bg-gradient-to-r from-amber-600 to-transparent mx-auto rounded-full mb-6"></div>
+                <p class="text-slate-400 mt-4 max-w-2xl mx-auto text-lg">Comprehensive digital solutions tailored for modern businesses. Use arrows or swipe to explore.</p>
+            </div>
+
+            <!-- Scroll Container Wrapper -->
+            <div class="reveal-element relative group" style="transition-delay: 200ms;">
+                <!-- Navigation Buttons (Responsive) -->
+                <button onclick="scrollSlider('left')" class="flex absolute left-2 md:left-0 top-1/2 -translate-y-1/2 md:-ml-6 z-20 w-10 h-10 md:w-14 md:h-14 items-center justify-center bg-slate-900/80 border border-slate-700 text-white rounded-full shadow-lg backdrop-blur-sm hover:bg-amber-600 hover:border-amber-600 transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 md:w-8 md:h-8">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                    </svg>
+                </button>
+                <button onclick="scrollSlider('right')" class="flex absolute right-2 md:right-0 top-1/2 -translate-y-1/2 md:-mr-6 z-20 w-10 h-10 md:w-14 md:h-14 items-center justify-center bg-slate-900/80 border border-slate-700 text-white rounded-full shadow-lg backdrop-blur-sm hover:bg-amber-600 hover:border-amber-600 transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 md:w-8 md:h-8">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                    </svg>
+                </button>
+
+                <!-- Fade effect on sides -->
+                <div class="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-slate-900 to-transparent z-10 pointer-events-none"></div>
+                <div class="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-slate-900 to-transparent z-10 pointer-events-none"></div>
+
+                <!-- Slider Container -->
+                <div id="services-slider" class="flex overflow-x-auto pt-10 pb-16 gap-6 snap-x snap-mandatory no-scrollbar" style="scroll-behavior: smooth;">
+                    
+                    <!-- Card 1: Web Dev (Left) -->
+                    <div class="reveal-left hoverable tilt-card min-w-[60vw] sm:min-w-[220px] flex-shrink-0 snap-center group bg-slate-900/80 backdrop-blur-md rounded-2xl border border-slate-700 hover:border-amber-500/50 transition-all duration-1000 hover:-translate-y-2 overflow-hidden shadow-2xl" style="transition-delay: 0ms;">
+                        <div class="relative h-60 overflow-hidden bg-slate-900">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent z-10"></div>
+                            <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=600" alt="Web Development" class="block w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-[1500ms] transform-gpu">
+                            <div class="absolute bottom-4 left-6 z-20 w-10 h-10 bg-slate-800/90 backdrop-blur rounded-xl flex items-center justify-center text-xl shadow-lg border border-slate-600 group-hover:bg-blue-600/90 transition-colors duration-700">
+                                <span class="group-hover:text-white text-blue-400 transition-colors duration-700">💻</span>
+                            </div>
+                        </div>
+                        <div class="p-5 pt-3">
+                            <h3 class="text-lg font-bold text-white mb-2">Web Development</h3>
+                            <p class="text-slate-400 text-xs leading-relaxed">Custom, responsive websites and e-commerce platforms built for high performance and conversion.</p>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: App Dev (Right) -->
+                    <div class="reveal-right hoverable tilt-card min-w-[60vw] sm:min-w-[220px] flex-shrink-0 snap-center group bg-slate-900/80 backdrop-blur-md rounded-2xl border border-slate-700 hover:border-amber-500/50 transition-all duration-1000 hover:-translate-y-2 overflow-hidden shadow-2xl" style="transition-delay: 150ms;">
+                        <div class="relative h-60 overflow-hidden bg-slate-900">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent z-10"></div>
+                            <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?auto=format&fit=crop&q=80&w=600" alt="App Development" class="block w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-[1500ms] transform-gpu">
+                            <div class="absolute bottom-4 left-6 z-20 w-10 h-10 bg-slate-800/90 backdrop-blur rounded-xl flex items-center justify-center text-xl shadow-lg border border-slate-600 group-hover:bg-purple-600/90 transition-colors duration-700">
+                                <span class="group-hover:text-white text-purple-400 transition-colors duration-700">📱</span>
+                            </div>
+                        </div>
+                        <div class="p-5 pt-3">
+                            <h3 class="text-lg font-bold text-white mb-2">App Development</h3>
+                            <p class="text-slate-400 text-xs leading-relaxed">Native and cross-platform mobile applications for iOS and Android that deliver seamless user experiences.</p>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Social Media Marketing (Left) -->
+                    <div class="reveal-left hoverable tilt-card min-w-[60vw] sm:min-w-[220px] flex-shrink-0 snap-center group bg-slate-900/80 backdrop-blur-md rounded-2xl border border-slate-700 hover:border-amber-500/50 transition-all duration-1000 hover:-translate-y-2 overflow-hidden shadow-2xl" style="transition-delay: 300ms;">
+                        <div class="relative h-60 overflow-hidden bg-slate-900">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent z-10"></div>
+                            <img src="https://www.big-red-digital.com/images/blogimages/social-media-networks.jpg" alt="Social Media" class="block w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-[1500ms] transform-gpu">
+                            <div class="absolute bottom-4 left-6 z-20 w-10 h-10 bg-slate-800/90 backdrop-blur rounded-xl flex items-center justify-center text-xl shadow-lg border border-slate-600 group-hover:bg-green-600/90 transition-colors duration-700">
+                                <span class="group-hover:text-white text-green-400 transition-colors duration-700">🚀</span>
+                            </div>
+                        </div>
+                        <div class="p-5 pt-3">
+                            <h3 class="text-lg font-bold text-white mb-2">Social Marketing</h3>
+                            <p class="text-slate-400 text-xs leading-relaxed">Strategic campaigns to boost brand awareness and engagement across all major platforms.</p>
+                        </div>
+                    </div>
+
+                    <!-- Card 4: E-commerce (Right) -->
+                    <div class="reveal-right hoverable tilt-card min-w-[60vw] sm:min-w-[220px] flex-shrink-0 snap-center group bg-slate-900/80 backdrop-blur-md rounded-2xl border border-slate-700 hover:border-amber-500/50 transition-all duration-1000 hover:-translate-y-2 overflow-hidden shadow-2xl" style="transition-delay: 450ms;">
+                        <div class="relative h-60 overflow-hidden bg-slate-900">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent z-10"></div>
+                            <img src="https://blog.shift4shop.com/hubfs/iStock-1051616786.jpg" alt="E-commerce" class="block w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-[1500ms] transform-gpu">
+                            <div class="absolute bottom-4 left-6 z-20 w-10 h-10 bg-slate-800/90 backdrop-blur rounded-xl flex items-center justify-center text-xl shadow-lg border border-slate-600 group-hover:bg-teal-600/90 transition-colors duration-700">
+                                <span class="group-hover:text-white text-teal-400 transition-colors duration-700">🛍️</span>
+                            </div>
+                        </div>
+                        <div class="p-5 pt-3">
+                            <h3 class="text-lg font-bold text-white mb-2">E-commerce</h3>
+                            <p class="text-slate-400 text-xs leading-relaxed">Scalable online stores with secure payment gateways and smart inventory management systems.</p>
+                        </div>
+                    </div>
+
+                    <!-- Card 5: SEO (Left) -->
+                    <div class="reveal-left hoverable tilt-card min-w-[60vw] sm:min-w-[220px] flex-shrink-0 snap-center group bg-slate-900/80 backdrop-blur-md rounded-2xl border border-slate-700 hover:border-amber-500/50 transition-all duration-1000 hover:-translate-y-2 overflow-hidden shadow-2xl" style="transition-delay: 600ms;">
+                        <div class="relative h-60 overflow-hidden bg-slate-900">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent z-10"></div>
+                            <img src="https://www.sppcdigital.com/wp-content/uploads/2024/03/google-seo-1024x767.jpg" alt="SEO" class="block w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-[1500ms] transform-gpu">
+                            <div class="absolute bottom-4 left-6 z-20 w-10 h-10 bg-slate-800/90 backdrop-blur rounded-xl flex items-center justify-center text-xl shadow-lg border border-slate-600 group-hover:bg-indigo-600/90 transition-colors duration-700">
+                                <span class="group-hover:text-white text-indigo-400 transition-colors duration-700">🔍</span>
+                            </div>
+                        </div>
+                        <div class="p-5 pt-3">
+                            <h3 class="text-lg font-bold text-white mb-2">SEO</h3>
+                            <p class="text-slate-400 text-xs leading-relaxed">Optimize your online presence to rank higher on search engines and drive organic traffic.</p>
+                        </div>
+                    </div>
+
+                    <!-- Card 6: Video Editing (Right) -->
+                    <div class="reveal-right hoverable tilt-card min-w-[60vw] sm:min-w-[220px] flex-shrink-0 snap-center group bg-slate-900/80 backdrop-blur-md rounded-2xl border border-slate-700 hover:border-amber-500/50 transition-all duration-1000 hover:-translate-y-2 overflow-hidden shadow-2xl" style="transition-delay: 750ms;">
+                        <div class="relative h-60 overflow-hidden bg-slate-900">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent z-10"></div>
+                            <img src="https://www.midiaresearch.com/storage/uploads/blog/featured/2244/cover_image-1721122691.jpg" alt="Video Editing" class="block w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-[1500ms] transform-gpu">
+                            <div class="absolute bottom-4 left-6 z-20 w-10 h-10 bg-slate-800/90 backdrop-blur rounded-xl flex items-center justify-center text-xl shadow-lg border border-slate-600 group-hover:bg-red-600/90 transition-colors duration-700">
+                                <span class="group-hover:text-white text-red-400 transition-colors duration-700">🎬</span>
+                            </div>
+                        </div>
+                        <div class="p-5 pt-3">
+                            <h3 class="text-lg font-bold text-white mb-2">Video Editing</h3>
+                            <p class="text-slate-400 text-xs leading-relaxed">Professional post-production for Reels, YouTube, and corporate promos that engage viewers.</p>
+                        </div>
+                    </div>
+
+                    <!-- Card 7: Graphic Design (Left) -->
+                    <div class="reveal-left hoverable tilt-card min-w-[60vw] sm:min-w-[220px] flex-shrink-0 snap-center group bg-slate-900/80 backdrop-blur-md rounded-2xl border border-slate-700 hover:border-amber-500/50 transition-all duration-1000 hover:-translate-y-2 overflow-hidden shadow-2xl" style="transition-delay: 900ms;">
+                        <div class="relative h-60 overflow-hidden bg-slate-900">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent z-10"></div>
+                            <img src="https://digitalmindsinstitute.pk/wp-content/uploads/2024/10/Asset-3-8-1.png" alt="Graphic Design" class="block w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-[1500ms] transform-gpu">
+                            <div class="absolute bottom-4 left-6 z-20 w-10 h-10 bg-slate-800/90 backdrop-blur rounded-xl flex items-center justify-center text-xl shadow-lg border border-slate-600 group-hover:bg-amber-600/90 transition-colors duration-700">
+                                <span class="group-hover:text-white text-amber-400 transition-colors duration-700">🎨</span>
+                            </div>
+                        </div>
+                        <div class="p-5 pt-3">
+                            <h3 class="text-lg font-bold text-white mb-2">Graphic Design</h3>
+                            <p class="text-slate-400 text-xs leading-relaxed">Brand identity, logo design, and social media creative assets that make your brand stand out.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Spacer for right padding on mobile -->
+                    <div class="min-w-[1px]"></div>
+                </div>
+            </div>
+            
+            <!-- Bottom Wave Divider -->
+            <div class="absolute bottom-0 left-0 w-full overflow-hidden leading-none">
+                <svg class="relative block w-[calc(100%+1.3px)] h-[50px]" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                    <path d="M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z" class="fill-slate-950"></path>
+                </svg>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. Vision & Mission Section -->
+    <section class="py-24 bg-slate-950 relative overflow-hidden border-t border-slate-900">
+        <!-- Background Elements -->
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl pointer-events-none">
+             <div class="absolute top-1/4 left-1/4 w-72 h-72 bg-amber-500/5 rounded-full blur-[80px]"></div>
+             <div class="absolute bottom-1/4 right-1/4 w-72 h-72 bg-blue-600/5 rounded-full blur-[80px]"></div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-16 reveal-element">
+                <h2 class="text-3xl md:text-5xl font-extrabold text-white mb-4">Driving <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-600">Digital Evolution</span></h2>
+                <p class="text-slate-400 max-w-2xl mx-auto">Our core philosophy that powers your growth.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+                <!-- Vision Card -->
+                <div class="reveal-left group relative p-1 rounded-[2.5rem] bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 hover:from-amber-500 hover:via-orange-600 hover:to-slate-900 transition-all duration-500 shadow-2xl hover:shadow-amber-500/20" style="transition-duration: 1.5s;">
+                    <div class="absolute inset-0 bg-slate-950 rounded-[2.5rem] m-[1px]"></div> <!-- Inner mask for border effect -->
+                    <div class="relative h-full bg-slate-900/50 backdrop-blur-xl rounded-[2.4rem] p-8 md:p-12 border border-white/5 overflow-hidden">
+                        <!-- Decorative Big Text -->
+                        <div class="absolute -top-6 -right-6 text-9xl font-black text-white/5 select-none pointer-events-none group-hover:text-amber-500/10 transition-colors duration-500">V</div>
+                        
+                        <div class="relative z-10">
+                            <div class="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-3xl mb-6 group-hover:scale-110 group-hover:bg-amber-500 group-hover:text-white transition-all duration-500 shadow-lg">
+                                👁️
+                            </div>
+                            <h3 class="text-3xl font-bold text-white mb-4 group-hover:text-amber-400 transition-colors">Our Vision</h3>
+                            <p class="text-slate-400 leading-relaxed text-lg group-hover:text-slate-300 transition-colors">
+                                To provide a complete platform where <span class="text-white font-semibold">digitalization is the priority</span>. We envision a digital world where working facilities are reliable, encouraging local businesses to transform into recognized Brands through digitization.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mission Card -->
+                <div class="reveal-right group relative p-1 rounded-[2.5rem] bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 hover:from-blue-500 hover:via-indigo-600 hover:to-slate-900 transition-all duration-500 shadow-2xl hover:shadow-blue-500/20" style="transition-delay: 200ms; transition-duration: 1.5s;">
+                     <div class="absolute inset-0 bg-slate-950 rounded-[2.5rem] m-[1px]"></div>
+                    <div class="relative h-full bg-slate-900/50 backdrop-blur-xl rounded-[2.4rem] p-8 md:p-12 border border-white/5 overflow-hidden">
+                         <!-- Decorative Big Text -->
+                        <div class="absolute -top-6 -right-6 text-9xl font-black text-white/5 select-none pointer-events-none group-hover:text-blue-500/10 transition-colors duration-500">M</div>
+
+                        <div class="relative z-10">
+                            <div class="w-16 h-16 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-3xl mb-6 group-hover:scale-110 group-hover:bg-blue-500 group-hover:text-white transition-all duration-500 shadow-lg">
+                                🎯
+                            </div>
+                            <h3 class="text-3xl font-bold text-white mb-4 group-hover:text-blue-400 transition-colors">Our Mission</h3>
+                            <p class="text-slate-400 leading-relaxed text-lg group-hover:text-slate-300 transition-colors">
+                                To migrate local businesses towards <span class="text-white font-semibold">social media advancement</span> and online recognition. We digitally support local brands to secure their first victory in the "social war" through strategic presence and engagement.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. Interactive Tools Section (Dark) -->
+    <section id="calculator" class="py-24 text-white relative overflow-hidden calc-bg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+                
+                <!-- Calculator Column (Reveal Left) -->
+                <div class="reveal-left">
+                    <h2 class="text-3xl font-bold mb-6">Growth Estimator</h2>
+                    <p class="text-slate-300 mb-8">
+                        Calculate the investment needed for targeted social media growth. Transparent pricing with no hidden fees.
+                    </p>
+                    
+                    <div class="glass-card rounded-2xl p-6 hoverable border-l-4 border-l-amber-500 shadow-2xl">
+                        <div class="space-y-4 mb-8">
+                            <label class="text-sm font-semibold text-slate-300 uppercase tracking-wider">Select Platform</label>
+                            <div class="grid grid-cols-2 gap-3">
+                                <button class="service-btn hoverable px-4 py-3 rounded-xl border border-slate-600 bg-slate-900/60 hover:bg-slate-800 hover:border-amber-500 transition-all text-left group active" data-rate="2.0" data-unit="Followers" onclick="selectService(this, 2.0, 'Followers')">
+                                    <div class="font-bold text-white group-hover:text-amber-400 transition-colors">Facebook</div>
+                                    <div class="text-xs text-slate-400 group-hover:text-slate-300">2.0 PKR/unit</div>
+                                </button>
+                                <button class="service-btn hoverable px-4 py-3 rounded-xl border border-slate-600 bg-slate-900/60 hover:bg-slate-800 hover:border-amber-500 transition-all text-left group" data-rate="4.0" data-unit="Followers" onclick="selectService(this, 4.0, 'Followers')">
+                                    <div class="font-bold text-white group-hover:text-amber-400 transition-colors">Instagram</div>
+                                    <div class="text-xs text-slate-400 group-hover:text-slate-300">4.0 PKR/unit</div>
+                                </button>
+                                <button class="service-btn hoverable px-4 py-3 rounded-xl border border-slate-600 bg-slate-900/60 hover:bg-slate-800 hover:border-amber-500 transition-all text-left group" data-rate="1.5" data-unit="Followers" onclick="selectService(this, 1.5, 'Followers')">
+                                    <div class="font-bold text-white group-hover:text-amber-400 transition-colors">TikTok</div>
+                                    <div class="text-xs text-slate-400 group-hover:text-slate-300">1.5 PKR/unit</div>
+                                </button>
+                                <button class="service-btn hoverable px-4 py-3 rounded-xl border border-slate-600 bg-slate-900/60 hover:bg-slate-800 hover:border-amber-500 transition-all text-left group" data-rate="5.0" data-unit="Followers" onclick="selectService(this, 5.0, 'Followers')">
+                                    <div class="font-bold text-white group-hover:text-amber-400 transition-colors">YouTube</div>
+                                    <div class="text-xs text-slate-400 group-hover:text-slate-300">5.0 PKR/unit</div>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-950/80 rounded-xl p-6 border border-slate-700 text-center backdrop-blur-sm">
+                            <div class="mb-4">
+                                <input type="range" min="500" max="50000" step="500" value="1000" id="quantitySlider" class="hoverable w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-500">
+                            </div>
+                            <div class="flex items-center justify-center gap-2 mb-1">
+                                <span class="text-4xl font-bold text-white" id="totalCost">2,000</span>
+                                <span class="text-xl text-amber-500 font-medium">PKR</span>
+                            </div>
+                            <div class="text-sm text-slate-400">
+                                for <input type="number" id="quantityInput" value="1000" class="hoverable w-24 bg-transparent border-b border-slate-600 text-center text-white focus:outline-none focus:border-amber-500 text-lg"> <span id="displayUnit">Followers</span>
+                            </div>
+                            <button class="hoverable w-full mt-6 bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 rounded-lg transition-colors shadow-lg">
+                                Start Campaign
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Connectivity Column (Reveal Right) -->
+                <div class="reveal-right flex flex-col justify-center">
+                    <h2 class="text-3xl font-bold mb-6">Our Connectivity</h2>
+                    <p class="text-slate-300 mb-8">
+                        We maintain active engagement across all major social networks, ensuring your brand has a ubiquitous presence.
+                    </p>
+                    <div class="glass-card rounded-2xl p-6 hoverable shadow-2xl border-r-4 border-r-blue-500">
+                        <div class="chart-container">
+                            <canvas id="platformChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. Management Packages -->
+    <section id="packages" class="py-24 bg-slate-950 border-t border-slate-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="reveal-zoom text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Management Packages</h2>
+                <div class="w-20 h-1 bg-amber-500 mx-auto rounded-full"></div>
+                <p class="text-slate-400 mt-4">Choose the tier that fits your growth stage.</p>
+            </div>
+
+            <!-- Chart Vis -->
+            <div class="reveal-element mb-16 bg-slate-900 p-6 rounded-2xl border border-slate-800 max-w-3xl mx-auto shadow-2xl" style="transition-delay: 100ms;">
+                <div class="chart-container h-64">
+                    <canvas id="packagesChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Pricing Grid - Now with Distinct 3D Designs -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 perspective-1000">
+                
+                <!-- 1. Starter (Silver/Slate) -->
+                <div class="pricing-card reveal-right relative group bg-slate-900 rounded-2xl p-8 border border-slate-800 hover:border-slate-500 transition-all duration-300 hover:-translate-y-2 hoverable tilt-card" style="transition-delay: 100ms;">
+                    <div class="absolute inset-x-0 top-0 h-1 bg-slate-500 rounded-t-2xl"></div>
+                    <div class="mb-4">
+                        <span class="text-xs font-bold tracking-widest text-slate-400 uppercase">Entry Level</span>
+                        <h3 class="text-2xl font-bold text-white mt-1">Starter</h3>
+                    </div>
+                    <div class="flex items-baseline mb-6">
+                        <span class="text-3xl font-bold text-white">25k</span>
+                        <span class="text-sm text-slate-500 ml-1">PKR/mo</span>
+                    </div>
+                    <ul class="space-y-4 mb-8 text-slate-400 text-sm">
+                        <li class="flex items-center"><div class="w-2 h-2 bg-slate-500 rounded-full mr-3"></div> Facebook</li>
+                        <li class="flex items-center"><div class="w-2 h-2 bg-slate-500 rounded-full mr-3"></div> Instagram</li>
+                        <li class="flex items-center"><div class="w-2 h-2 bg-slate-500 rounded-full mr-3"></div> Basic Support</li>
+                    </ul>
+                    <button class="hoverable w-full py-3 border border-slate-700 rounded-xl font-semibold text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">Select Starter</button>
+                </div>
+
+                <!-- 2. Standard (Neon Blue) -->
+                <div class="pricing-card reveal-right relative group bg-slate-900 rounded-2xl p-8 border border-slate-800 hover:border-blue-500/50 hover:shadow-[0_0_30px_rgba(59,130,246,0.15)] transition-all duration-300 hover:-translate-y-2 hoverable tilt-card" style="transition-delay: 200ms;">
+                    <div class="absolute inset-x-0 top-0 h-1 bg-blue-500 rounded-t-2xl shadow-[0_0_10px_rgba(59,130,246,0.5)]"></div>
+                    <div class="mb-4">
+                        <span class="text-xs font-bold tracking-widest text-blue-400 uppercase">Established</span>
+                        <h3 class="text-2xl font-bold text-white mt-1">Standard</h3>
+                    </div>
+                    <div class="flex items-baseline mb-6">
+                        <span class="text-3xl font-bold text-white">30k</span>
+                        <span class="text-sm text-slate-500 ml-1">PKR/mo</span>
+                    </div>
+                    <ul class="space-y-4 mb-8 text-slate-400 text-sm">
+                        <li class="flex items-center"><span class="text-blue-500 mr-3">✓</span> Facebook & Insta</li>
+                        <li class="flex items-center"><span class="text-blue-500 mr-3">✓</span> LinkedIn Integration</li>
+                        <li class="flex items-center"><span class="text-blue-500 mr-3">✓</span> Content Writing</li>
+                    </ul>
+                    <button class="hoverable w-full py-3 bg-blue-500/10 border border-blue-500/50 rounded-xl font-semibold text-blue-400 hover:bg-blue-500 hover:text-white transition-all">Select Standard</button>
+                </div>
+
+                <!-- 3. Growth (Vibrant Gold/Amber) - Featured -->
+                <div class="pricing-card reveal-right relative group bg-gradient-to-b from-slate-800 to-slate-900 rounded-2xl p-8 border border-amber-500/50 shadow-[0_0_40px_rgba(245,158,11,0.15)] transform md:-translate-y-4 z-10 hoverable tilt-card" style="transition-delay: 300ms;">
+                    <div class="absolute top-0 right-0 bg-amber-500 text-slate-900 text-xs font-bold px-3 py-1 rounded-bl-xl rounded-tr-xl">BEST VALUE</div>
+                    <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-amber-400 to-orange-500 rounded-t-2xl"></div>
+                    <div class="mb-4">
+                        <span class="text-xs font-bold tracking-widest text-amber-400 uppercase">Accelerated</span>
+                        <h3 class="text-3xl font-bold text-white mt-1">Growth</h3>
+                    </div>
+                    <div class="flex items-baseline mb-6">
+                        <span class="text-4xl font-bold text-amber-400">35k</span>
+                        <span class="text-sm text-slate-400 ml-1">PKR/mo</span>
+                    </div>
+                    <ul class="space-y-4 mb-8 text-slate-300 text-sm font-medium">
+                        <li class="flex items-center"><span class="text-amber-400 mr-3">★</span> FB, Insta, TikTok</li>
+                        <li class="flex items-center"><span class="text-amber-400 mr-3">★</span> Logo Design Included</li>
+                        <li class="flex items-center"><span class="text-amber-400 mr-3">★</span> Graphic Design</li>
+                        <li class="flex items-center"><span class="text-amber-400 mr-3">★</span> Bi-Weekly Posts</li>
+                    </ul>
+                    <button class="hoverable w-full py-4 bg-gradient-to-r from-amber-500 to-orange-600 rounded-xl font-bold text-white shadow-lg hover:shadow-amber-500/25 hover:from-amber-400 hover:to-orange-500 transition-all">Get Started</button>
+                </div>
+
+                <!-- 4. Ultimate (Teal/Diamond) -->
+                <div class="pricing-card reveal-right relative group bg-slate-900 rounded-2xl p-8 border border-slate-800 hover:border-teal-400/50 hover:shadow-[0_0_30px_rgba(45,212,191,0.15)] transition-all duration-300 hover:-translate-y-2 hoverable tilt-card" style="transition-delay: 400ms;">
+                    <div class="absolute inset-x-0 top-0 h-1 bg-teal-400 rounded-t-2xl shadow-[0_0_10px_rgba(45,212,191,0.5)]"></div>
+                    <div class="mb-4">
+                        <span class="text-xs font-bold tracking-widest text-teal-400 uppercase">Enterprise</span>
+                        <h3 class="text-2xl font-bold text-white mt-1">Ultimate</h3>
+                    </div>
+                    <div class="flex items-baseline mb-6">
+                        <span class="text-3xl font-bold text-white">50k</span>
+                        <span class="text-sm text-slate-500 ml-1">PKR/mo</span>
+                    </div>
+                    <ul class="space-y-4 mb-8 text-slate-400 text-sm">
+                        <li class="flex items-center"><span class="text-teal-400 mr-3">✓</span> All Platforms + YouTube</li>
+                        <li class="flex items-center"><span class="text-teal-400 mr-3">✓</span> Priority Support</li>
+                        <li class="flex items-center"><span class="text-teal-400 mr-3">✓</span> Advanced SEO</li>
+                    </ul>
+                    <button class="hoverable w-full py-3 bg-teal-500/10 border border-teal-500/50 rounded-xl font-semibold text-teal-400 hover:bg-teal-500 hover:text-white transition-all">Select Ultimate</button>
+                </div>
+
+            </div>
+            
+            <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto reveal-zoom">
+                <div class="reveal-element bg-slate-900/50 border border-slate-800 p-4 rounded-xl flex items-center justify-center gap-3 hover:border-red-500/30 transition-colors cursor-default" style="transition-delay: 500ms;">
+                    <span class="text-red-500 font-bold">YouTube Special</span>
+                    <span class="text-slate-400">Dedicated Management</span>
+                    <span class="text-white font-bold">35k PKR</span>
+                </div>
+                <div class="reveal-element bg-slate-900/50 border border-slate-800 p-4 rounded-xl flex items-center justify-center gap-3 hover:border-purple-500/30 transition-colors cursor-default" style="transition-delay: 600ms;">
+                    <span class="text-purple-400 font-bold">Elite Tier</span>
+                    <span class="text-slate-400">High Volume Content</span>
+                    <span class="text-white font-bold">45k PKR</span>
+                </div>
+            </div>
+
+            <div class="text-center mt-8 text-slate-500 text-xs uppercase tracking-wide reveal-zoom">
+                * Prices exclude GST. Paid boosts charged separately.
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. Client Stories -->
+    <section id="testimonials" class="py-24 testimonials-bg border-t border-slate-900 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+            <h2 class="reveal-element text-3xl font-bold text-center text-white mb-16 drop-shadow-md">Client Success Stories</h2>
+            
+            <!-- Testimonial Slider Wrapper -->
+            <div class="relative group" style="transition-delay: 200ms;">
+                <!-- Slider Container -->
+                <div id="testimonials-slider" class="flex overflow-x-auto pb-10 gap-6 snap-x snap-mandatory no-scrollbar" style="scroll-behavior: smooth;">
+                    
+                    <!-- Card 1 -->
+                    <div class="min-w-[75vw] sm:min-w-[300px] flex-shrink-0 snap-center bg-slate-900/90 p-8 rounded-2xl border border-slate-700 backdrop-blur-sm hover:scale-105 transition-transform duration-300 hoverable">
+                        <div class="text-4xl text-amber-500 opacity-20 font-serif mb-4">"</div>
+                        <p class="text-slate-300 italic mb-6 leading-relaxed">"Social Sphere transformed our local boutique's online presence. The growth in real, local followers was exactly what we needed."</p>
+                        <div class="flex items-center gap-4">
+                            <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=100" alt="Client" class="w-12 h-12 rounded-full object-cover border-2 border-slate-600">
+                            <div>
+                                <div class="font-bold text-white">Hassan R.</div>
+                                <div class="text-xs text-slate-500">Business Owner</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div class="min-w-[75vw] sm:min-w-[300px] flex-shrink-0 snap-center bg-slate-900/90 p-8 rounded-2xl border border-slate-700 backdrop-blur-sm hover:scale-105 transition-transform duration-300 hoverable">
+                        <div class="text-4xl text-amber-500 opacity-20 font-serif mb-4">"</div>
+                        <p class="text-slate-300 italic mb-6 leading-relaxed">"Their web development team is top-tier. They built our e-commerce platform from scratch and it works flawlessly."</p>
+                        <div class="flex items-center gap-4">
+                            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=100" alt="Client" class="w-12 h-12 rounded-full object-cover border-2 border-slate-600">
+                            <div>
+                                <div class="font-bold text-white">TechStart Solutions</div>
+                                <div class="text-xs text-slate-500">Startup Founder</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 3 -->
+                    <div class="min-w-[75vw] sm:min-w-[300px] flex-shrink-0 snap-center bg-slate-900/90 p-8 rounded-2xl border border-slate-700 backdrop-blur-sm hover:scale-105 transition-transform duration-300 hoverable">
+                        <div class="text-4xl text-amber-500 opacity-20 font-serif mb-4">"</div>
+                        <p class="text-slate-300 italic mb-6 leading-relaxed">"Great service for TikTok growth. Affordable rates and transparency that's hard to find these days."</p>
+                        <div class="flex items-center gap-4">
+                            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=100" alt="Client" class="w-12 h-12 rounded-full object-cover border-2 border-slate-600">
+                            <div>
+                                <div class="font-bold text-white">Bilal T.</div>
+                                <div class="text-xs text-slate-500">Fitness Coach</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 4 (New) -->
+                    <div class="min-w-[75vw] sm:min-w-[300px] flex-shrink-0 snap-center bg-slate-900/90 p-8 rounded-2xl border border-slate-700 backdrop-blur-sm hover:scale-105 transition-transform duration-300 hoverable">
+                        <div class="text-4xl text-amber-500 opacity-20 font-serif mb-4">"</div>
+                        <p class="text-slate-300 italic mb-6 leading-relaxed">"The graphic design team captured my brand aesthetic perfectly. Engagement has doubled since the rebrand!"</p>
+                        <div class="flex items-center gap-4">
+                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=100" alt="Client" class="w-12 h-12 rounded-full object-cover border-2 border-slate-600">
+                            <div>
+                                <div class="font-bold text-white">Sara B.</div>
+                                <div class="text-xs text-slate-500">Fashion Blogger</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 5 (New) -->
+                    <div class="min-w-[75vw] sm:min-w-[300px] flex-shrink-0 snap-center bg-slate-900/90 p-8 rounded-2xl border border-slate-700 backdrop-blur-sm hover:scale-105 transition-transform duration-300 hoverable">
+                        <div class="text-4xl text-amber-500 opacity-20 font-serif mb-4">"</div>
+                        <p class="text-slate-300 italic mb-6 leading-relaxed">"Their video editing turned our raw footage into mouth-watering reels. Tables are booked out weeks in advance."</p>
+                        <div class="flex items-center gap-4">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=100" alt="Client" class="w-12 h-12 rounded-full object-cover border-2 border-slate-600">
+                            <div>
+                                <div class="font-bold text-white">GreenLeaf Cafe</div>
+                                <div class="text-xs text-slate-500">Restaurant Owner</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 6 (New) -->
+                    <div class="min-w-[75vw] sm:min-w-[300px] flex-shrink-0 snap-center bg-slate-900/90 p-8 rounded-2xl border border-slate-700 backdrop-blur-sm hover:scale-105 transition-transform duration-300 hoverable">
+                        <div class="text-4xl text-amber-500 opacity-20 font-serif mb-4">"</div>
+                        <p class="text-slate-300 italic mb-6 leading-relaxed">"SEO results speak for themselves. We are ranking #1 for local property searches now. Highly recommended."</p>
+                        <div class="flex items-center gap-4">
+                            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=100" alt="Client" class="w-12 h-12 rounded-full object-cover border-2 border-slate-600">
+                            <div>
+                                <div class="font-bold text-white">Ali K.</div>
+                                <div class="text-xs text-slate-500">Real Estate Pro</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 8. Footer / Contact -->
+    <footer id="contact" class="relative bg-slate-950 pt-24 pb-12 overflow-hidden border-t border-slate-900">
+        <!-- Background Decor -->
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl pointer-events-none">
+            <div class="absolute top-0 right-0 w-96 h-96 bg-amber-500/5 rounded-full blur-[100px]"></div>
+            <div class="absolute bottom-0 left-0 w-96 h-96 bg-blue-600/5 rounded-full blur-[100px]"></div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
+                
+                <!-- Brand & Info -->
+                <div class="reveal-element space-y-8">
+                    <div>
+                        <h2 class="text-4xl font-extrabold text-white mb-4 tracking-tight">Let's Build Your <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-600">Digital Legacy</span></h2>
+                        <p class="text-slate-400 text-lg leading-relaxed max-w-md">
+                            Ready to take your brand to the next level? Connect with Social Sphere today and start your journey towards digital dominance.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <!-- Contact Item 1 -->
+                        <div class="group p-4 rounded-2xl bg-slate-900/50 border border-slate-800 hover:border-amber-500/30 transition-all duration-300 hoverable">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center text-amber-500 text-xl group-hover:scale-110 transition-transform shadow-lg shadow-amber-500/10 border border-slate-700">📞</div>
+                                <div>
+                                    <div class="text-xs text-slate-500 font-bold uppercase tracking-wider mb-0.5">Call Us</div>
+                                    <div class="text-white font-medium group-hover:text-amber-400 transition-colors">+92-314-950-0110</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Contact Item 2 -->
+                        <div class="group p-4 rounded-2xl bg-slate-900/50 border border-slate-800 hover:border-amber-500/30 transition-all duration-300 hoverable">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center text-amber-500 text-xl group-hover:scale-110 transition-transform shadow-lg shadow-amber-500/10 border border-slate-700">💬</div>
+                                <div>
+                                    <div class="text-xs text-slate-500 font-bold uppercase tracking-wider mb-0.5">WhatsApp</div>
+                                    <div class="text-white font-medium group-hover:text-amber-400 transition-colors">+92-316-520-8030</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Social Media Links (Contact Item 3 - Redesigned) -->
+                        <div class="group p-6 rounded-2xl bg-slate-900/50 border border-slate-800 hover:border-indigo-500/30 transition-all duration-300 sm:col-span-2 hoverable relative overflow-hidden">
+                            <div class="relative z-10 flex flex-col sm:flex-row items-center justify-between gap-4">
+                                <div>
+                                    <div class="text-xs text-slate-500 font-bold uppercase tracking-wider mb-0.5">Follow Our Journey</div>
+                                    <div class="text-white font-medium">@socialsphere</div>
+                                </div>
+                                <div class="flex gap-4">
+                                    <!-- Facebook -->
+                                    <a href="https://www.facebook.com/profile.php?id=61585644328839" target="_blank" class="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center text-blue-500 text-xl hover:bg-blue-600 hover:text-white transition-all shadow-lg border border-slate-700 hover:border-blue-500 hover:scale-110" aria-label="Facebook">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951z"/>
+                                        </svg>
+                                    </a>
+                                    <!-- Instagram -->
+                                    <a href="https://www.instagram.com/social.sphere89/" target="_blank" class="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center text-pink-500 text-xl hover:bg-gradient-to-tr hover:from-yellow-400 hover:via-red-500 hover:to-purple-500 hover:text-white transition-all shadow-lg border border-slate-700 hover:border-pink-500 hover:scale-110" aria-label="Instagram">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.917 3.917 0 0 0-1.417.923A3.927 3.927 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.916 3.916 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.926 3.926 0 0 0-.923-1.417A3.911 3.911 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0h.003zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599.28.28.453.546.598.92.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.47 2.47 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.478 2.478 0 0 1-.92-.598 2.48 2.48 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233 0-2.136.008-2.388.046-3.231.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92.28-.28.546-.453.92-.598.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045v.002zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92zm-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217zm0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334z"/>
+                                        </svg>
+                                    </a>
+                                    <!-- TikTok -->
+                                    <a href="https://www.tiktok.com/@socialsphere12" target="_blank" class="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center text-white text-xl hover:bg-black hover:shadow-[0_0_15px_rgba(0,255,255,0.5)] transition-all shadow-lg border border-slate-700 hover:border-slate-500 hover:scale-110" aria-label="TikTok">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M9 0h1.98c.144.715.54 1.617 1.235 2.512C12.895 3.389 13.797 4 15 4v2c-1.753 0-3.07-.814-4-1.829V11a5 5 0 1 1-5-5v2a3 3 0 1 0 3 3V0Z"/>
+                                        </svg>
+                                    </a>
+                                    <!-- WhatsApp Channel (New) -->
+                                    <a href="https://whatsapp.com/channel/0029VbBpjrP0Vyc8L7h4cF2R" target="_blank" class="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center text-green-500 text-xl hover:bg-green-600 hover:text-white transition-all shadow-lg border border-slate-700 hover:border-green-500 hover:scale-110" aria-label="WhatsApp Channel">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.171-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Inquiry Form -->
+                <div class="reveal-element" style="transition-delay: 200ms;">
+                    <div class="bg-slate-900/80 backdrop-blur-xl p-8 md:p-10 rounded-[2.5rem] border border-slate-800 shadow-2xl relative overflow-hidden group hover:border-slate-700 transition-colors">
+                        <!-- Decorative glow -->
+                        <div class="absolute -top-24 -right-24 w-48 h-48 bg-amber-500/10 rounded-full blur-3xl group-hover:bg-amber-500/20 transition-all duration-500"></div>
+                        
+                        <h3 class="text-2xl font-bold text-white mb-6 relative z-10">Send an Inquiry</h3>
+                        
+                        <form onsubmit="event.preventDefault(); alert('Thank you! We will contact you at +92-314-950-0110 shortly.');" class="space-y-5 relative z-10">
+                            <div class="group/input">
+                                <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 ml-1 group-focus-within/input:text-amber-500 transition-colors">Full Name</label>
+                                <input type="text" placeholder="John Doe" class="hoverable w-full bg-slate-950 border border-slate-700 rounded-xl px-5 py-4 text-white placeholder-slate-600 focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition-all outline-none">
+                            </div>
+                            
+                            <div class="group/input">
+                                <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 ml-1 group-focus-within/input:text-amber-500 transition-colors">Phone Number</label>
+                                <input type="text" placeholder="+92 300 1234567" class="hoverable w-full bg-slate-950 border border-slate-700 rounded-xl px-5 py-4 text-white placeholder-slate-600 focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition-all outline-none">
+                            </div>
+
+                            <div class="group/input">
+                                <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 ml-1 group-focus-within/input:text-amber-500 transition-colors">Service Interest</label>
+                                <div class="relative">
+                                    <select class="hoverable w-full bg-slate-950 border border-slate-700 rounded-xl px-5 py-4 text-white focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition-all outline-none appearance-none cursor-pointer">
+                                        <option>Social Media Management</option>
+                                        <option>Growth Service</option>
+                                        <option>Web Development</option>
+                                        <option>App Development</option>
+                                        <option>E-commerce</option>
+                                        <option>SEO</option>
+                                        <option>Video Editing</option>
+                                        <option>Graphic Design</option>
+                                    </select>
+                                    <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">
+                                        ▼
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button class="hoverable w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white font-bold py-4 rounded-xl transition-all shadow-lg hover:shadow-amber-500/25 transform hover:-translate-y-0.5 mt-2">
+                                Submit Request
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Bar -->
+            <div class="border-t border-slate-900 mt-20 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-slate-500">
+                <div>&copy; 2025 Social Sphere. All Rights Reserved.</div>
+                <div class="flex gap-6">
+                    <a href="#" class="hover:text-amber-500 transition-colors hoverable">Privacy Policy</a>
+                    <a href="#" class="hover:text-amber-500 transition-colors hoverable">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Floating Button -->
+    <a href="https://wa.me/923165208030" target="_blank" class="hoverable fixed bottom-6 right-6 z-50 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-lg transition-all hover:scale-110 flex items-center justify-center group animate-fade-in-up" aria-label="Chat on WhatsApp" style="animation-delay: 1s;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-whatsapp" viewBox="0 0 16 16">
+            <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.171-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/>
+        </svg>
+    </a>
+
+    <!-- Logic -->
+    <script>
+        // --- GLOBAL VARIABLES & FUNCTIONS (Accessible by HTML onclick) ---
+        let currentRate = 2.0;
+        let currentUnit = "Followers";
+        let autoScrollInterval;
+        let testimonialInterval;
+
+        function scrollToSection(id) {
+            const element = document.getElementById(id);
+            if (!element) return;
+            const offset = 80;
+            const bodyRect = document.body.getBoundingClientRect().top;
+            const elementRect = element.getBoundingClientRect().top;
+            const elementPosition = elementRect - bodyRect;
+            const offsetPosition = elementPosition - offset;
+
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth'
+            });
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (mobileMenu) mobileMenu.classList.add('hidden');
+        }
+
+        function scrollSlider(direction) {
+            const slider = document.getElementById('services-slider');
+            if (!slider) return;
+            
+            const firstCard = slider.querySelector('div'); 
+            if (!firstCard) return;
+
+            const cardWidth = firstCard.offsetWidth;
+            const gap = 24; // gap-6 is 24px
+            const scrollAmount = cardWidth + gap;
+
+            if (direction === 'left') {
+                slider.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+            } else {
+                slider.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            }
+        }
+
+        function startAutoScroll() {
+            stopAutoScroll(); // Clear any existing interval
+            autoScrollInterval = setInterval(() => {
+                const slider = document.getElementById('services-slider');
+                if (!slider) return;
+
+                // Check if we are at the end
+                // We give a small buffer (e.g., 5px) because scrollLeft + clientWidth might not exactly equal scrollWidth due to fractional pixels
+                if (slider.scrollLeft + slider.clientWidth >= slider.scrollWidth - 5) {
+                    // Reset to start
+                    slider.scrollTo({ left: 0, behavior: 'smooth' });
+                } else {
+                    // Scroll right
+                    scrollSlider('right');
+                }
+            }, 3000); // 3 seconds
+        }
+
+        function stopAutoScroll() {
+            clearInterval(autoScrollInterval);
+        }
+
+        // Testimonial Auto Scroll Logic
+        function startTestimonialScroll() {
+            stopTestimonialScroll();
+            testimonialInterval = setInterval(() => {
+                const slider = document.getElementById('testimonials-slider');
+                if (!slider) return;
+
+                const firstCard = slider.querySelector('div');
+                if (!firstCard) return;
+                
+                const scrollAmount = firstCard.offsetWidth + 24; // Width + gap
+
+                if (slider.scrollLeft + slider.clientWidth >= slider.scrollWidth - 5) {
+                    slider.scrollTo({ left: 0, behavior: 'smooth' });
+                } else {
+                    slider.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                }
+            }, 4000); // 4 seconds
+        }
+
+        function stopTestimonialScroll() {
+            clearInterval(testimonialInterval);
+        }
+
+        function selectService(btn, rate, unit) {
+            // Update UI
+            document.querySelectorAll('.service-btn').forEach(b => {
+                b.classList.remove('bg-slate-800', 'border-amber-500', 'active');
+                b.classList.add('border-slate-600', 'bg-slate-900/60');
+            });
+            btn.classList.remove('border-slate-600', 'bg-slate-900/60');
+            btn.classList.add('bg-slate-800', 'border-amber-500', 'active');
+            
+            // Update State
+            currentRate = rate;
+            currentUnit = unit;
+            updateCalculation();
+        }
+
+        function updateCalculation() {
+            const qtyElement = document.getElementById('quantityInput');
+            if(!qtyElement) return;
+            
+            const qty = parseInt(qtyElement.value) || 0;
+            const cost = Math.round(qty * currentRate);
+            
+            const totalCostEl = document.getElementById('totalCost');
+            const displayUnitEl = document.getElementById('displayUnit');
+            
+            if(totalCostEl) totalCostEl.innerText = cost.toLocaleString();
+            if(displayUnitEl) displayUnitEl.innerText = currentUnit;
+        }
+
+        // --- DOM CONTENT LOADED (Safe Zone for Event Listeners) ---
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // 1. Mobile Menu Listener
+            const mobileBtn = document.getElementById('mobile-menu-btn');
+            if (mobileBtn) {
+                mobileBtn.addEventListener('click', () => {
+                    const menu = document.getElementById('mobile-menu');
+                    if (menu) menu.classList.toggle('hidden');
+                });
+            }
+
+            // 2. Calculator Input Listeners
+            const qtySlider = document.getElementById('quantitySlider');
+            const qtyInput = document.getElementById('quantityInput');
+
+            if (qtySlider && qtyInput) {
+                qtySlider.addEventListener('input', (e) => {
+                    qtyInput.value = e.target.value;
+                    updateCalculation();
+                });
+
+                qtyInput.addEventListener('input', (e) => {
+                    let val = parseInt(e.target.value);
+                    if (isNaN(val)) val = 0;
+                    if (val > 50000) val = 50000;
+                    qtySlider.value = val;
+                    updateCalculation();
+                });
+            }
+
+            // 3. Custom Cursor Logic
+            const cursorDot = document.querySelector('.cursor-dot');
+            const cursorOutline = document.querySelector('.cursor-outline');
+
+            if (cursorDot && cursorOutline && window.innerWidth > 640) {
+                let mouseX = 0, mouseY = 0;
+                let outlineX = 0, outlineY = 0;
+
+                window.addEventListener('mousemove', (e) => {
+                    mouseX = e.clientX;
+                    mouseY = e.clientY;
+                    cursorDot.style.left = `${mouseX}px`;
+                    cursorDot.style.top = `${mouseY}px`;
+                });
+
+                function animateCursor() {
+                    const speed = 0.08;
+                    outlineX += (mouseX - outlineX) * speed;
+                    outlineY += (mouseY - outlineY) * speed;
+                    cursorOutline.style.left = `${outlineX}px`;
+                    cursorOutline.style.top = `${outlineY}px`;
+                    requestAnimationFrame(animateCursor);
+                }
+                animateCursor();
+
+                const hoverables = document.querySelectorAll('button, a, .hoverable, .service-btn');
+                hoverables.forEach(el => {
+                    el.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
+                    el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
+                });
+            }
+
+            // 4. Hero Network Animation
+            const canvas = document.getElementById('networkCanvas');
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                let width, height;
+                let particles = [];
+
+                function resize() {
+                    width = canvas.width = window.innerWidth;
+                    height = canvas.height = window.innerHeight;
+                }
+                window.addEventListener('resize', resize);
+                resize();
+
+                class Particle {
+                    constructor() {
+                        this.x = Math.random() * width;
+                        this.y = Math.random() * height;
+                        this.vx = (Math.random() - 0.5) * 0.5;
+                        this.vy = (Math.random() - 0.5) * 0.5;
+                        this.size = Math.random() * 2 + 1;
+                    }
+                    update() {
+                        this.x += this.vx;
+                        this.y += this.vy;
+                        if(this.x < 0 || this.x > width) this.vx *= -1;
+                        if(this.y < 0 || this.y > height) this.vy *= -1;
+                    }
+                    draw() {
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                        ctx.fillStyle = 'rgba(245, 158, 11, 0.5)';
+                        ctx.fill();
+                    }
+                }
+
+                function initParticles() {
+                    particles = [];
+                    const count = Math.min(width / 15, 100);
+                    for(let i=0; i<count; i++) particles.push(new Particle());
+                }
+                initParticles();
+
+                function animateNetwork() {
+                    ctx.clearRect(0, 0, width, height);
+                    particles.forEach((p, index) => {
+                        p.update();
+                        p.draw();
+                        for(let j = index + 1; j < particles.length; j++) {
+                            const p2 = particles[j];
+                            const dist = Math.hypot(p.x - p2.x, p.y - p2.y);
+                            if(dist < 150) {
+                                ctx.beginPath();
+                                ctx.strokeStyle = `rgba(245, 158, 11, ${0.1 - dist/1500})`;
+                                ctx.lineWidth = 0.5;
+                                ctx.moveTo(p.x, p.y);
+                                ctx.lineTo(p2.x, p2.y);
+                                ctx.stroke();
+                            }
+                        }
+                    });
+                    requestAnimationFrame(animateNetwork);
+                }
+                animateNetwork();
+            }
+
+            // 5. 3D Tilt Effect
+            const cards = document.querySelectorAll('.tilt-card');
+            cards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    const rotateX = ((y - centerY) / centerY) * -10;
+                    const rotateY = ((x - centerX) / centerX) * 10;
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+                });
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = `perspective(1000px) rotateX(0) rotateY(0) scale(1)`;
+                });
+            });
+
+            // 6. Scroll Reveal Observer
+            const observerOptions = {
+                root: null,
+                threshold: 0.1,
+                rootMargin: "0px 0px -50px 0px"
+            };
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+            document.querySelectorAll('.reveal-element, .reveal-left, .reveal-right, .reveal-zoom').forEach(el => observer.observe(el));
+
+            // 7. Charts Initialization
+            // Connectivity Chart
+            const ctxPlatform = document.getElementById('platformChart');
+            if (ctxPlatform) {
+                const baseDataValues = [100, 100, 60, 90, 80];
+                new Chart(ctxPlatform.getContext('2d'), {
+                    type: 'polarArea',
+                    data: {
+                        labels: ['Facebook', 'Instagram', 'LinkedIn', 'YouTube', 'TikTok'],
+                        datasets: [{
+                            data: baseDataValues,
+                            backgroundColor: [
+                                'rgba(59, 130, 246, 0.8)',
+                                'rgba(236, 72, 153, 0.8)',
+                                'rgba(96, 165, 250, 0.8)',
+                                'rgba(239, 68, 68, 0.8)',
+                                'rgba(255, 255, 255, 0.8)'
+                            ],
+                            borderWidth: 0,
+                            hoverBorderWidth: 2,
+                            hoverBorderColor: '#ffffff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: { 
+                            r: { 
+                                ticks: { 
+                                    display: true, 
+                                    backdropColor: 'transparent',
+                                    color: '#94a3b8',
+                                    font: { size: 10 },
+                                    stepSize: 20,
+                                    callback: function(value) { return value + '%' }
+                                }, 
+                                grid: { color: '#334155' },
+                                pointLabels: {
+                                    display: true,
+                                    centerPointLabels: true,
+                                    color: '#e2e8f0',
+                                    font: { size: 11, weight: 'bold' }
+                                }
+                            } 
+                        },
+                        plugins: { 
+                            legend: { 
+                                position: 'bottom',
+                                labels: { color: '#e2e8f0', padding: 20 }
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                                titleColor: '#fff',
+                                bodyColor: '#cbd5e1',
+                                borderColor: 'rgba(255,255,255,0.1)',
+                                borderWidth: 1,
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.label + ': ' + context.raw + '% Engagement';
+                                    }
+                                }
+                            }
+                        },
+                        animation: {
+                            duration: 1500,
+                            easing: 'easeOutQuart'
+                        }
+                    }
+                });
+            }
+
+            // Packages Chart
+            const ctxPackages = document.getElementById('packagesChart');
+            if (ctxPackages) {
+                new Chart(ctxPackages.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['Starter', 'Standard', 'Growth', 'Premium', 'Elite', 'Ultimate'],
+                        datasets: [{
+                            label: 'Cost (PKR)',
+                            data: [25000, 30000, 35000, 40000, 45000, 50000],
+                            backgroundColor: [
+                                '#64748b', '#3b82f6', '#f59e0b', '#a855f7', '#a855f7', '#2dd4bf'
+                            ],
+                            borderRadius: 4,
+                            barPercentage: 0.6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: { 
+                            y: { display: false, grid: { display: false } }, 
+                            x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 10 } } } 
+                        },
+                        plugins: { legend: { display: false }, tooltip: { backgroundColor: 'rgba(15, 23, 42, 0.9)', callbacks: { label: function(context) { return context.raw.toLocaleString() + ' PKR'; } } } }
+                    }
+                });
+            }
+
+            // Initialize calc values
+            updateCalculation();
+
+            // Auto-Scroll Initialization for Services
+            const servicesSlider = document.getElementById('services-slider');
+            if (servicesSlider) {
+                servicesSlider.addEventListener('mouseenter', stopAutoScroll);
+                servicesSlider.addEventListener('mouseleave', startAutoScroll);
+                startAutoScroll();
+            }
+
+            // Auto-Scroll Initialization for Testimonials
+            const testimonialsSlider = document.getElementById('testimonials-slider');
+            if (testimonialsSlider) {
+                testimonialsSlider.addEventListener('mouseenter', stopTestimonialScroll);
+                testimonialsSlider.addEventListener('mouseleave', startTestimonialScroll);
+                startTestimonialScroll();
+            }
+        });
+    </script>
+</body>
+</html>
